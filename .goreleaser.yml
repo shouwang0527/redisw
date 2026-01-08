@@ -3,6 +3,7 @@ project_name: redisw
 before:
   hooks:
     - go mod tidy
+    - go test ./...
 
 builds:
   - env:
@@ -10,29 +11,93 @@ builds:
     goos:
       - linux
       - darwin
+      - windows
     goarch:
       - amd64
       - arm64
+    # Windows 不支持 arm64（目前）
+    ignore:
+      - goos: windows
+        goarch: arm64
+    main: ./cmd/redisw
     binary: redisw
     ldflags:
       - -s -w -X main.version={{.Version}}
 
 archives:
   - format: tar.gz
+    # Windows 使用 zip 格式
+    format_overrides:
+      - goos: windows
+        format: zip
     name_template: >-
       {{ .ProjectName }}_{{ .Version }}_
-      {{- title .Os }}_{{ .Arch }}
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
     files:
       - LICENSE
       - README.md
+      - CHANGELOG.md
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
 
 changelog:
-  disable: true
-  # sort: asc
-  # filters:
-  #   exclude:
-  #     - '^docs:'
-  #     - '^test:'
-  #     - '^ci:'
-  #     - Merge pull request
-  #     - Merge branch
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^ci:'
+      - '^chore:'
+      - 'merge conflict'
+      - Merge pull request
+      - Merge remote-tracking branch
+      - Merge branch
+  groups:
+    - title: '✨ Features'
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: '🐛 Bug Fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+    - title: '📝 Documentation'
+      regexp: "^.*docs[(\\w)]*:+.*$"
+      order: 2
+    - title: '🔧 Refactor'
+      regexp: "^.*refactor[(\\w)]*:+.*$"
+      order: 3
+    - title: 'Others'
+      order: 999
+
+release:
+  github:
+    owner: zhaojy0527
+    name: redisw
+  draft: false
+  prerelease: auto
+  name_template: "v{{.Version}}"
+  header: |
+    ## Redisw v{{.Version}} - 极简 Redis 连接切换工具
+
+    ### 安装方式
+
+    #### macOS (Homebrew)
+    ```bash
+    brew tap zhaojy0527/redisw
+    brew install redisw
+    ```
+
+    #### 从二进制安装
+    下载对应平台的压缩包，解压后即可使用。
+
+    #### Windows 用户
+    下载 `redisw_{{.Version}}_Windows_x86_64.zip`，解压后将 `redisw.exe` 添加到 PATH。
+
+    ---
