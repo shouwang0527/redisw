@@ -5,6 +5,55 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-01-09
+
+### 🚀 Major Update - 零依赖革命
+
+**重磅特性：内置 Redis 客户端，彻底移除对 redis-cli 的依赖！**
+
+### ✨ Added - 新功能
+
+- **🎯 零依赖设计**：内置纯 Go 实现的 Redis 客户端（go-redis）
+- **💻 开箱即用**：无需安装任何外部工具，下载即用
+- **🔧 交互式 REPL**：自研命令行界面，支持：
+  - 所有标准 Redis 命令（GET、SET、HSET、LPUSH 等）
+  - 引号包裹的参数支持（`SET "my key" "my value"`）
+  - 友好的结果格式化输出
+  - 优雅的错误提示
+  - `exit` / `quit` 命令退出
+- **🌍 真正的跨平台**：Windows/Linux/macOS 完全一致的用户体验
+
+### 🔧 Changed - 变更
+
+- **升级 Go 版本**：从 1.17 升级到 1.21（支持现代 Go 特性）
+- **移除 redis-cli 依赖**：不再调用外部 `redis-cli` 命令
+- **二进制体积**：从 5MB 增长到 14MB（内嵌客户端的成本，但仍然很小）
+
+### 🚀 Performance - 性能
+
+- **连接性能优化**：直接 TCP 连接，无需子进程启动开销
+- **错误处理优化**：更精确的错误定位和提示
+
+### 📝 Breaking Changes - 破坏性变更
+
+- ⚠️ **不再依赖 redis-cli**：如果你的脚本依赖 redisw 调用 redis-cli，需要适配
+- ⚠️ **交互界面微调**：提示符格式变更为 `host:port>` （之前是 redis-cli 的格式）
+
+### 🎁 Benefits - 收益
+
+**对用户**：
+- ✅ Windows 用户无需折腾 Redis 安装
+- ✅ 新同事入职零配置，开箱即用
+- ✅ Docker 容器体积更小（无需安装 redis-tools）
+- ✅ 离线环境可用（不依赖外部工具）
+
+**对开发者**：
+- ✅ 更好的错误处理和用户反馈
+- ✅ 更容易扩展功能（如命令补全、语法高亮）
+- ✅ 更容易测试（无需 mock redis-cli）
+
+---
+
 ## [1.2.0] - 2026-01-08
 
 ### ✨ Added - 新功能

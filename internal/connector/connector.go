@@ -1,13 +1,16 @@
 package connector
 
 import (
+	"bufio"
+	"context"
 	"fmt"
 	"net"
 	"os"
-	"os/exec"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/redis/go-redis/v9"
 	"redisw/internal/config"
 )
 
@@ -39,43 +42,155 @@ func (c *Connector) HealthCheck(server *config.RedisServer) bool {
 	return true
 }
 
-// Connect 连接到 Redis 服务器（使用 redis-cli）
-// 该函数会阻塞直到用户退出 redis-cli
+// Connect 连接到 Redis 服务器（使用内置 go-redis 客户端）
+// 该函数会阻塞直到用户退出交互式会话
 func (c *Connector) Connect(server *config.RedisServer) error {
-	// 构建 redis-cli 命令
-	args := []string{
-		"-h", server.Host,
-		"-p", fmt.Sprintf("%d", server.Port),
-		"-c", // 支持集群模式
+	// 创建 Redis 客户端
+	client := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%d", server.Host, server.Port),
+		Password: server.Password,
+		DB:       0,
+	})
+	defer client.Close()
+
+	// 测试连接
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	if err := client.Ping(ctx).Err(); err != nil {
+		return fmt.Errorf("failed to connect to Redis: %w", err)
 	}
 
-	// 添加密码参数
-	if server.Password != "" {
-		args = append(args, "-a", server.Password)
-	}
+	// 显示欢迎信息
+	fmt.Printf("Connected to Redis at %s:%d\n", server.Host, server.Port)
+	fmt.Println("Type 'exit' or 'quit' to disconnect, or press Ctrl+C")
+	fmt.Println()
 
-	cmd := exec.Command("redis-cli", args...)
+	// 启动交互式 REPL
+	return c.startREPL(client, server)
+}
 
-	// 设置标准输入输出（直接连接到终端）
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+// startREPL 启动交互式 Redis REPL
+func (c *Connector) startREPL(client *redis.Client, server *config.RedisServer) error {
+	reader := bufio.NewReader(os.Stdin)
+	ctx := context.Background()
 
-	// 启动 redis-cli
-	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("failed to start redis-cli: %w", err)
-	}
+	for {
+		// 显示提示符
+		fmt.Printf("%s:%d> ", server.Host, server.Port)
 
-	// 等待 redis-cli 退出
-	if err := cmd.Wait(); err != nil {
-		// 用户按 Ctrl+C 退出是正常情况，不报错
-		if _, ok := err.(*exec.ExitError); ok {
+		// 读取用户输入
+		input, err := reader.ReadString('\n')
+		if err != nil {
+			return fmt.Errorf("failed to read input: %w", err)
+		}
+
+		// 去除首尾空白字符
+		input = strings.TrimSpace(input)
+
+		// 空输入，继续
+		if input == "" {
+			continue
+		}
+
+		// 退出命令
+		if strings.ToLower(input) == "exit" || strings.ToLower(input) == "quit" {
+			fmt.Println("Goodbye!")
 			return nil
 		}
-		return fmt.Errorf("redis-cli exited with error: %w", err)
+
+		// 解析命令和参数
+		args := parseCommand(input)
+		if len(args) == 0 {
+			continue
+		}
+
+		// 执行 Redis 命令
+		result, err := client.Do(ctx, args...).Result()
+		if err != nil {
+			fmt.Printf("(error) %v\n", err)
+			continue
+		}
+
+		// 格式化输出结果
+		printResult(result)
+	}
+}
+
+// parseCommand 解析命令字符串为参数列表
+// 支持引号包裹的参数 (例如: SET "my key" "my value")
+func parseCommand(input string) []interface{} {
+	var args []interface{}
+	var current strings.Builder
+	inQuote := false
+	escapeNext := false
+
+	for i, char := range input {
+		if escapeNext {
+			current.WriteRune(char)
+			escapeNext = false
+			continue
+		}
+
+		if char == '\\' {
+			escapeNext = true
+			continue
+		}
+
+		if char == '"' {
+			inQuote = !inQuote
+			continue
+		}
+
+		if char == ' ' && !inQuote {
+			if current.Len() > 0 {
+				args = append(args, current.String())
+				current.Reset()
+			}
+			continue
+		}
+
+		current.WriteRune(char)
+
+		// 最后一个字符，追加当前积累的字符串
+		if i == len(input)-1 && current.Len() > 0 {
+			args = append(args, current.String())
+		}
 	}
 
-	return nil
+	return args
+}
+
+// printResult 格式化打印 Redis 命令结果
+func printResult(result interface{}) {
+	switch v := result.(type) {
+	case nil:
+		fmt.Println("(nil)")
+	case string:
+		fmt.Printf("\"%s\"\n", v)
+	case int64:
+		fmt.Printf("(integer) %d\n", v)
+	case []interface{}:
+		if len(v) == 0 {
+			fmt.Println("(empty array)")
+		} else {
+			for i, item := range v {
+				fmt.Printf("%d) ", i+1)
+				printResult(item)
+			}
+		}
+	case map[string]interface{}:
+		if len(v) == 0 {
+			fmt.Println("(empty hash)")
+		} else {
+			for k, val := range v {
+				fmt.Printf("%s: ", k)
+				printResult(val)
+			}
+		}
+	default:
+		fmt.Printf("%v\n", v)
+	}
 }
 
 // ConnectWithCheck 连接前先进行健康检查
@@ -135,4 +250,3 @@ func (c *Connector) BatchHealthCheck(servers []config.RedisServer) []bool {
 
 	return results
 }
-

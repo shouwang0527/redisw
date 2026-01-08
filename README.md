@@ -4,7 +4,13 @@ Redisw 是一个 **极简主义** 设计的 Redis 服务器连接切换工具。
 
 ## ✨ 功能特点
 
-### v1.2.0 新特性
+### v1.3.0 新特性 (重磅更新!)
+
+- **🚀 零依赖设计**：内置 Redis 客户端，无需安装 redis-cli！
+- **💻 开箱即用**：下载即可使用，所有平台统一体验
+- **🎯 原生性能**：纯 Go 实现，比调用外部命令更快
+
+### v1.2.0 特性
 
 - **📊 历史记录智能排序**：最近使用的服务器自动排到最前面（标记 ★）
 - **⚡ 并发健康检查**：启动时并发检查所有服务器，速度提升 3 倍
@@ -17,7 +23,8 @@ Redisw 是一个 **极简主义** 设计的 Redis 服务器连接切换工具。
 - 交互式服务器选择界面
 - 支持模糊搜索（服务器名称过滤）
 - 支持密码保护的 Redis 连接
-- 支持 Redis 集群模式
+- 内置交互式 Redis REPL
+- 支持所有标准 Redis 命令
 - 支持自定义配置文件路径
 - 命令行界面简洁直观
 
@@ -25,23 +32,8 @@ Redisw 是一个 **极简主义** 设计的 Redis 服务器连接切换工具。
 
 ### 系统要求
 
-- **Redis CLI 工具**（必需）
-- 支持平台：macOS、Linux、Windows
-
-### 安装 Redis CLI
-
-**macOS:**
-```bash
-brew install redis
-```
-
-**Linux (Ubuntu/Debian):**
-```bash
-apt-get install redis-tools
-```
-
-**Windows:**
-从 [Redis 官网](https://redis.io/download) 下载安装包。
+- **无任何依赖！** Redisw 是完全独立的单一二进制文件
+- 支持平台：macOS (Intel/Apple Silicon)、Linux (x86_64/ARM64)、Windows (x86_64)
 
 ### 方式 1: Homebrew (macOS 推荐)
 
