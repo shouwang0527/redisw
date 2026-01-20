@@ -4,7 +4,15 @@ Redisw 是一个 **极简主义** 设计的 Redis 服务器连接切换工具。
 
 ## ✨ 功能特点
 
-### v1.3.0 新特性 (重磅更新!)
+### v1.4.0 新特性 (重磅更新!)
+
+- **🌐 浏览器扩展**：支持 Chrome/Firefox/Edge，浏览器中一键切换 Redis
+- **🔗 Native Messaging**：浏览器与本地程序无缝通信
+- **⚡ 一键切换**：弹窗式界面，实时状态显示，快速连接
+- **🛠️ 子命令支持**：`native`、`install-native`、`uninstall-native`
+- **✨ 跨浏览器兼容**：统一的安装和使用体验
+
+### v1.3.0 特性
 
 - **🚀 零依赖设计**：内置 Redis 客户端，无需安装 redis-cli！
 - **💻 开箱即用**：下载即可使用，所有平台统一体验
@@ -46,11 +54,11 @@ brew install redisw
 
 1. 访问 [Releases](https://github.com/zhaojy0527/redisw/releases) 页面
 2. 下载对应平台的压缩包：
-   - macOS (arm64): `redisw_1.2.0_Darwin_arm64.tar.gz`
-   - macOS (amd64): `redisw_1.2.0_Darwin_x86_64.tar.gz`
-   - Linux (arm64): `redisw_1.2.0_Linux_arm64.tar.gz`
-   - Linux (amd64): `redisw_1.2.0_Linux_x86_64.tar.gz`
-   - Windows (amd64): `redisw_1.2.0_Windows_x86_64.zip`
+   - macOS (arm64): `redisw_1.4.0_Darwin_arm64.tar.gz`
+   - macOS (amd64): `redisw_1.4.0_Darwin_x86_64.tar.gz`
+   - Linux (arm64): `redisw_1.4.0_Linux_arm64.tar.gz`
+   - Linux (amd64): `redisw_1.4.0_Linux_x86_64.tar.gz`
+   - Windows (amd64): `redisw_1.4.0_Windows_x86_64.zip`
 
 **macOS/Linux:**
 ```bash
@@ -111,7 +119,29 @@ Redisw 按以下优先级查找配置文件：
 
 ## 🚀 使用方法
 
-### 基本使用
+### 浏览器扩展使用（v1.4.0 新功能）
+
+**1. 安装 Native Messaging Host**
+```bash
+redisw install-native
+```
+这会自动安装到所有支持的浏览器（Chrome/Firefox/Edge）。
+
+**2. 安装浏览器扩展**
+- Chrome/Edge: 打开 `chrome://extensions`，启用"开发者模式"，加载 `extension/` 目录
+- Firefox: 打开 `about:debugging`，加载 `extension/manifest.json`
+
+**3. 使用扩展**
+- 点击浏览器工具栏的 Redisw 图标
+- 在弹出界面中选择 Redis 服务器
+- 点击"连接"即可在新终端窗口打开 Redis REPL
+
+**卸载：**
+```bash
+redisw uninstall-native
+```
+
+### 命令行使用
 
 ```bash
 # 使用默认配置文件启动
@@ -119,6 +149,9 @@ redisw
 
 # 指定配置文件启动
 redisw -config /path/to/redisw_config.yml
+
+# Native Messaging 模式（供浏览器扩展调用）
+redisw native
 ```
 
 ### 交互界面说明
@@ -210,8 +243,11 @@ A: 下载 Windows 版本的 zip 包，解压后将 `redisw.exe` 添加到系统 
 **Q: 如何查看历史记录？**
 A: 历史记录保存在 `~/.config/redisw/history.json`，可以直接查看或删除。
 
-**Q: 支持 SSH 隧道吗？**
-A: 当前版本暂不支持，计划在 v1.3.0 中添加。
+**Q: 浏览器扩展如何工作？**
+A: 扩展通过 Native Messaging 协议与本地 redisw 程序通信，获取服务器列表并触发连接。
+
+**Q: 为什么浏览器扩展无法连接？**
+A: 请确保：1) 已安装 Native Messaging Host (`redisw install-native`)；2) redisw 在 PATH 中；3) 重启浏览器。
 
 ## �� 许可证
 
