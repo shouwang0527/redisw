@@ -22,6 +22,30 @@ var (
 )
 
 func main() {
+	// 检查子命令
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "native":
+			// Native Messaging 模式
+			if err := RunNative(*configPath); err != nil {
+				log.Fatalf("Native mode error: %v", err)
+			}
+			return
+		case "install-native":
+			// 安装 Native Messaging Host
+			if err := InstallNative(); err != nil {
+				log.Fatalf("Install error: %v", err)
+			}
+			return
+		case "uninstall-native":
+			// 卸载 Native Messaging Host
+			if err := UninstallNative(); err != nil {
+				log.Fatalf("Uninstall error: %v", err)
+			}
+			return
+		}
+	}
+
 	flag.Parse()
 
 	// 1. 发现并加载配置

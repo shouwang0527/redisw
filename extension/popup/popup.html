@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redisw</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 服务器列表视图 -->
+    <div id="server-list-view" class="view active">
+      <header class="header">
+        <h1>🗄️ Redisw</h1>
+        <div class="header-actions">
+          <button id="btn-import" class="btn-icon" title="导入配置">📥</button>
+          <button id="btn-add" class="btn-icon" title="添加服务器">➕</button>
+        </div>
+      </header>
+      
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="搜索服务器...">
+      </div>
+      
+      <div id="server-list" class="server-list">
+        <!-- 服务器列表将通过 JS 动态渲染 -->
+      </div>
+      
+      <div id="loading" class="loading hidden">
+        <span>加载中...</span>
+      </div>
+      
+      <div id="error-message" class="error-message hidden"></div>
+    </div>
+
+    <!-- 命令执行视图 -->
+    <div id="terminal-view" class="view">
+      <header class="header">
+        <button id="btn-back" class="btn-back">← 返回</button>
+        <div class="server-info">
+          <span id="current-server-name"></span>
+          <span id="current-server-status" class="status"></span>
+        </div>
+      </header>
+      
+      <div id="server-address" class="server-address"></div>
+      
+      <div id="terminal" class="terminal">
+        <div id="terminal-output"></div>
+        <div class="terminal-input-line">
+          <span id="terminal-prompt" class="prompt"></span>
+          <input type="text" id="terminal-input" class="terminal-input" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+      
+      <div class="danger-zone">
+        <span class="danger-label">⚠️ 危险操作</span>
+        <div class="danger-buttons">
+          <button id="btn-flushdb" class="btn-danger">FLUSHDB<br><small>清空当前库</small></button>
+          <button id="btn-flushall" class="btn-danger">FLUSHALL<br><small>清空所有库</small></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 服务器表单视图 -->
+    <div id="server-form-view" class="view">
+      <header class="header">
+        <button id="btn-form-back" class="btn-back">← 返回</button>
+        <h2 id="form-title">添加服务器</h2>
+      </header>
+      
+      <form id="server-form" class="server-form">
+        <div class="form-group">
+          <label for="server-name">名称</label>
+          <input type="text" id="server-name" required placeholder="例如: 生产环境">
+        </div>
+        
+        <div class="form-group">
+          <label for="server-host">主机</label>
+          <input type="text" id="server-host" required placeholder="例如: 127.0.0.1">
+        </div>
+        
+        <div class="form-group">
+          <label for="server-port">端口</label>
+          <input type="number" id="server-port" required value="6379" min="1" max="65535">
+        </div>
+        
+        <div class="form-group">
+          <label for="server-password">密码 (可选)</label>
+          <input type="password" id="server-password" placeholder="留空表示无密码">
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" id="btn-form-cancel" class="btn-secondary">取消</button>
+          <button type="submit" id="btn-form-submit" class="btn-primary">保存</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 导入视图 -->
+    <div id="import-view" class="view">
+      <header class="header">
+        <button id="btn-import-back" class="btn-back">← 返回</button>
+        <h2>批量导入配置</h2>
+      </header>
+      
+      <div class="import-content">
+        <div id="drop-zone" class="drop-zone">
+          <span class="drop-icon">📁</span>
+          <p>点击选择文件或拖拽到此处</p>
+          <p class="drop-hint">支持 YAML (.yml, .yaml) 和 JSON (.json)</p>
+          <input type="file" id="import-file" accept=".yml,.yaml,.json" hidden>
+        </div>
+        
+        <div class="conflict-strategy">
+          <label>冲突处理策略:</label>
+          <div class="radio-group">
+            <label><input type="radio" name="conflict" value="skip"> 跳过 - 保留现有配置</label>
+            <label><input type="radio" name="conflict" value="overwrite" checked> 覆盖 - 用导入的配置替换</label>
+            <label><input type="radio" name="conflict" value="rename"> 重命名 - 自动添加后缀</label>
+          </div>
+        </div>
+        
+        <div id="import-preview" class="import-preview hidden">
+          <h3>预览 (<span id="preview-count">0</span> 个服务器)</h3>
+          <div id="preview-list" class="preview-list"></div>
+        </div>
+        
+        <div class="import-actions hidden" id="import-actions">
+          <button type="button" id="btn-import-cancel" class="btn-secondary">取消</button>
+          <button type="button" id="btn-import-confirm" class="btn-primary">确认导入</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 确认对话框 -->
+    <div id="confirm-dialog" class="dialog hidden">
+      <div class="dialog-content">
+        <h3 id="dialog-title">⚠️ 危险操作确认</h3>
+        <p id="dialog-message"></p>
+        <div id="dialog-server-info" class="dialog-server-info"></div>
+        <div class="dialog-actions">
+          <button id="btn-dialog-cancel" class="btn-secondary">取消</button>
+          <button id="btn-dialog-confirm" class="btn-danger">确认执行 ⚠️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

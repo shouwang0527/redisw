@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Redisw",
+  "version": "1.0.0",
+  "description": "Redis 服务器连接管理工具 - 快速切换和管理多个 Redis 服务器",
+  "permissions": [
+    "nativeMessaging",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
