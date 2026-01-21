@@ -3,7 +3,6 @@ package native
 import (
 	"encoding/json"
 	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/leanovate/gopter"
@@ -333,10 +332,10 @@ func loadConfigForTest(path string) ([]struct {
 	}
 
 	var servers []struct {
-		Name     string `yaml:"name"`
-		Host     string `yaml:"host"`
-		Port     int    `yaml:"port"`
-		Password string `yaml:"password"`
+		Name     string
+		Host     string
+		Port     int
+		Password string
 	}
 
 	// 简单解析 YAML
