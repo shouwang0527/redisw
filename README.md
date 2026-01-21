@@ -46,13 +46,13 @@ Redisw 是一个 **极简主义** 设计的 Redis 服务器连接切换工具。
 ### 方式 1: Homebrew (macOS 推荐)
 
 ```bash
-brew tap zhaojy0527/redisw
+brew tap shouwang0527/redisw
 brew install redisw
 ```
 
 ### 方式 2: 二进制包安装
 
-1. 访问 [Releases](https://github.com/zhaojy0527/redisw/releases) 页面
+1. 访问 [Releases](https://github.com/shouwang0527/redisw/releases) 页面
 2. 下载对应平台的压缩包：
    - macOS (arm64): `redisw_1.4.0_Darwin_arm64.tar.gz`
    - macOS (amd64): `redisw_1.4.0_Darwin_x86_64.tar.gz`
@@ -73,7 +73,7 @@ sudo mv redisw /usr/local/bin/
 ### 方式 3: 从源码编译
 
 ```bash
-git clone https://github.com/zhaojy0527/redisw.git
+git clone https://github.com/shouwang0527/redisw.git
 cd redisw
 make build
 sudo make install  # 可选：安装到系统
@@ -265,7 +265,7 @@ A: 请确保：1) 已安装 Native Messaging Host (`redisw install-native`)；2)
 
 ## 📮 联系方式
 
-- **问题反馈**：[GitHub Issues](https://github.com/zhaojy0527/redisw/issues)
+- **问题反馈**：[GitHub Issues](https://github.com/shouwang0527/redisw/issues)
 - **邮件**：zhaojianyong0527@gmail.com
 - **变更日志**：[CHANGELOG.md](CHANGELOG.md)
 - **架构文档**：[CLAUDE.md](CLAUDE.md)

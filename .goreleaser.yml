@@ -78,7 +78,7 @@ changelog:
 
 release:
   github:
-    owner: zhaojy0527
+    owner: shouwang0527
     name: redisw
   draft: false
   prerelease: auto

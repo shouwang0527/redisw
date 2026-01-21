@@ -484,7 +484,7 @@ goreleaser release --clean
 
 发布渠道：
 - GitHub Releases
-- Homebrew Tap: `brew tap zhaojy0527/redisw`
+- Homebrew Tap: `brew tap shouwang0527/redisw`
 
 ---
 
@@ -622,9 +622,9 @@ types:
 
 ## 联系方式
 
-**作者**: zhaojy0527
+**作者**: shouwang0527
 **邮箱**: zhaojianyong0527@gmail.com
-**GitHub**: https://github.com/zhaojy0527/redisw
+**GitHub**: https://github.com/shouwang0527/redisw
 **License**: MIT
 
 ---
