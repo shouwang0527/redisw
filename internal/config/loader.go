@@ -76,6 +76,11 @@ func createDefaultConfig(filePath string) error {
 
 // Save 保存配置到文件
 func Save(filePath string, servers []RedisServer) error {
+	// 确保配置目录存在
+	if err := EnsureConfigDir(); err != nil {
+		return fmt.Errorf("failed to create config directory: %w", err)
+	}
+
 	file, err := os.Create(filePath)
 	if err != nil {
 		return fmt.Errorf("failed to create config file: %w", err)
