@@ -4,7 +4,7 @@ Redisw 是一个 **极简主义** 设计的 Redis 服务器连接切换工具。
 
 ## ✨ 功能特点
 
-### v1.4.0 新特性 (重磅更新!)
+### v1.4.1 新特性 (重磅更新!)
 
 - **🌐 浏览器扩展**：支持 Chrome/Firefox/Edge，浏览器中一键切换 Redis
 - **🔗 Native Messaging**：浏览器与本地程序无缝通信
@@ -54,11 +54,11 @@ brew install redisw
 
 1. 访问 [Releases](https://github.com/shouwang0527/redisw/releases) 页面
 2. 下载对应平台的压缩包：
-   - macOS (arm64): `redisw_1.4.0_Darwin_arm64.tar.gz`
-   - macOS (amd64): `redisw_1.4.0_Darwin_x86_64.tar.gz`
-   - Linux (arm64): `redisw_1.4.0_Linux_arm64.tar.gz`
-   - Linux (amd64): `redisw_1.4.0_Linux_x86_64.tar.gz`
-   - Windows (amd64): `redisw_1.4.0_Windows_x86_64.zip`
+   - macOS (arm64): `redisw_1.4.1_Darwin_arm64.tar.gz`
+   - macOS (amd64): `redisw_1.4.1_Darwin_x86_64.tar.gz`
+   - Linux (arm64): `redisw_1.4.1_Linux_arm64.tar.gz`
+   - Linux (amd64): `redisw_1.4.1_Linux_x86_64.tar.gz`
+   - Windows (amd64): `redisw_1.4.1_Windows_x86_64.zip`
 
 **macOS/Linux:**
 ```bash
@@ -119,7 +119,7 @@ Redisw 按以下优先级查找配置文件：
 
 ## 🚀 使用方法
 
-### 浏览器扩展使用（v1.4.0 新功能）
+### 浏览器扩展使用（v1.4.1）
 
 **1. 安装 Native Messaging Host**
 ```bash

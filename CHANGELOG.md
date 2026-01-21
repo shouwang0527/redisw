@@ -5,6 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-01-21
+
+### 🐛 Bug Fixes - 修复
+
+- **修复浏览器扩展保存配置失败问题**：
+  - `config.Save()` 现在会自动创建缺失的配置目录
+  - 解决首次通过浏览器扩展添加服务器时保存失败的问题
+  - 新增 `TestSaveCreatesMissingDirectory` 单元测试确保修复有效
+
+### 🔧 Changed - 变更
+
+- **扩展目录重命名**：`extension/__tests__/` → `extension/tests/`（兼容 Chrome 限制）
+- **修正图标路径**：manifest.json 中的图标引用从 `.png` 修正为 `.svg`
+
+### 📦 Release Notes
+
+这是 v1.4.0 的补丁版本，强烈建议所有使用浏览器扩展的用户升级。
+
+---
+
+## [1.4.0] - 2026-01-09
+
+### 🌐 Major Feature - 浏览器扩展支持
+
+- **🌐 浏览器扩展**：支持 Chrome/Firefox/Edge
+- **🔗 Native Messaging**：浏览器与本地程序无缝通信
+- **⚡ 弹窗式界面**：现代化 UI，实时状态显示
+- **🛠️ 子命令支持**：native、install-native、uninstall-native
+
+### 技术亮点
+
+- 标准 Native Messaging Protocol 实现
+- 协议层与业务层分离设计
+- 完整测试覆盖（1000+ 行测试代码）
+
+---
+
 ## [1.3.0] - 2026-01-09
 
 ### 🚀 Major Update - 零依赖革命
